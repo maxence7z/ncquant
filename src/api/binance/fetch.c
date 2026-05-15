@@ -38,6 +38,19 @@ static char *http_get(const char *url) {
 	return resp.data;
 }
 
+char *construct_url(EntryParams *params) {
+    char *url[512];
+    if (params->start_time == 0 && params->end_time == 0) {
+        snprintf(url, sizeof(url),
+                 "https://api.binance.com/api/v3/klines"
+                 "?symbol=%s&interval=%s&limit=%d",
+                 params->symbol,
+                 interval_str[params->interval],
+                 params->limit);
+    }
+    return url;
+}
+
 void printdata() {
     char *json = http_get("https://api.binance.com/api/v3/klines"
                           "?symbol=BTCUSDT&interval=1h&limit=5");
