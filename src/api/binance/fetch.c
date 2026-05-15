@@ -13,6 +13,7 @@ static size_t write_callback(void *data, size_t size, size_t nmemb, HttpResponse
 	size_t chunk = size * nmemb;
 	char *ptr = realloc(resp->data, resp->size + chunk + 1);
 	if (!ptr) return 0;
+    resp->data = ptr;
 	memcpy(resp->data + resp->size, data, chunk);
 	resp->size += chunk;
 	resp->data[resp->size] = '\0';
@@ -35,4 +36,15 @@ static char *http_get(const char *url) {
 		return NULL;
 	}
 	return resp.data;
+}
+
+void printdata() {
+    char *json = http_get("https://api.binance.com/api/v3/klines"
+                          "?symbol=BTCUSDT&interval=1h&limit=5");
+    if (!json) {
+        fprintf(stderr, "http_get failed\n");
+        return;
+    }
+    printf("%s\n", json);
+    free(json);
 }
